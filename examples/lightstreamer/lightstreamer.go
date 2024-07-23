@@ -37,8 +37,18 @@ func main() {
 			return
 		}
 
-		tickChan := make(chan igmarkets.LightStreamerTick)
-		err := igHandle.OpenLightStreamerSubscription(ctx, conf.epics, tickChan)
+		lsConn, err := igHandle.NewLightStreamerConnection(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = igHandle.Login(ctx)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		tickChan, err := lsConn.SubscribeMarkets(ctx, conf.epics...)
 		if err != nil {
 			log.WithError(err).Error("open stream fialed")
 		}

@@ -35,21 +35,21 @@ type DealReference struct {
 // OTCOrderRequest - request struct for placing orders
 type OTCOrderRequest struct {
 	Epic                  string  `json:"epic"`
-	Level                 string  `json:"level,omitempty"`
+	Level                 float64 `json:"level,omitempty"`
 	ForceOpen             bool    `json:"forceOpen"`
-	OrderType             string  `json:"orderType"`
+	OrderType             string  `json:"orderType"` // LIMIT/MARKET/QUOTE
 	CurrencyCode          string  `json:"currencyCode"`
 	Direction             string  `json:"direction"` // "BUY" or "SELL"
 	Expiry                string  `json:"expiry"`
 	Size                  float64 `json:"size"` // Deal size
-	StopDistance          string  `json:"stopDistance,omitempty"`
-	StopLevel             string  `json:"stopLevel,omitempty"`
-	LimitDistance         string  `json:"limitDistance,omitempty"`
-	LimitLevel            string  `json:"limitLevel,omitempty"`
+	StopDistance          float64 `json:"stopDistance,omitempty"`
+	StopLevel             float64 `json:"stopLevel,omitempty"`
+	LimitDistance         float64 `json:"limitDistance,omitempty"`
+	LimitLevel            float64 `json:"limitLevel,omitempty"`
 	QuoteID               string  `json:"quoteId,omitempty"`
 	TimeInForce           string  `json:"timeInForce,omitempty"` // "EXECUTE_AND_ELIMINATE" or "FILL_OR_KILL"
 	TrailingStop          bool    `json:"trailingStop"`
-	TrailingStopIncrement string  `json:"trailingStopIncrement,omitempty"`
+	TrailingStopIncrement float64 `json:"trailingStopIncrement,omitempty"`
 	GuaranteedStop        bool    `json:"guaranteedStop"`
 	DealReference         string  `json:"dealReference,omitempty"`
 }
