@@ -32,6 +32,20 @@ type DealReference struct {
 	DealReference string `json:"dealReference"`
 }
 
+// OTCOrderDeleteRequest - request struct for deleting orders
+type OTCOrderDeleteRequest struct {
+	DealId      string  `json:"dealId,omitempty"`
+	Direction   string  `json:"direction"` // "BUY" or "SELL"
+	Epic        string  `json:"epic,omitempty"`
+	Expiry      string  `json:"expiry,omitempty"`
+	Level       float64 `json:"level,omitempty"`
+	OrderType   string  `json:"orderType"` // LIMIT/MARKET/QUOTE
+	QuoteID     string  `json:"quoteId,omitempty"`
+	Size        float64 `json:"size"`                  // Deal size
+	TimeInForce string  `json:"timeInForce,omitempty"` // "EXECUTE_AND_ELIMINATE" or "FILL_OR_KILL"
+
+}
+
 // OTCOrderRequest - request struct for placing orders
 type OTCOrderRequest struct {
 	Epic                  string  `json:"epic"`
@@ -100,6 +114,7 @@ type OTCDealConfirmation struct {
 	TrailingStopIncrement float64        `json:"trailingIncrement"`
 	GuaranteedStop        bool           `json:"guaranteedStop"`
 	DealReference         string         `json:"dealReference,omitempty"`
+	DealId                string         `json:"dealId,omitempty"`
 }
 
 // OTCUpdateOrderRequest - request struct for updating orders
@@ -142,16 +157,21 @@ type OTCWorkingOrder struct {
 }
 
 // DeletePositionsOTC - Closes one or more OTC positions
-func (ig *IGMarkets) DeletePositionsOTC(ctx context.Context) error {
-	bodyReq := new(bytes.Buffer)
+func (ig *IGMarkets) DeletePositionsOTC(ctx context.Context, deleteReq OTCOrderDeleteRequest) (*DealReference, error) {
+	bodyReq, err := json.Marshal(&deleteReq)
 
-	req, err := http.NewRequest("DELETE", ig.APIURL+"/gateway/deal/positions/otc", bodyReq)
+	fmt.Println(string(bodyReq))
+	req, err := http.NewRequest("POST", ig.APIURL+"/gateway/deal/positions/otc", bytes.NewReader(bodyReq))
 	if err != nil {
-		return fmt.Errorf("igmarkets: unable to create HTTP request: %v", err)
+		return nil, fmt.Errorf("igmarkets: unable to create HTTP request: %v", err)
 	}
+	req.Header.Set("_method", "DELETE") // FFS IG...
 
-	_, err = ig.doRequest(ctx, req, 1, nil)
-	return err
+	dealRef, err := ig.doRequest(ctx, req, 1, DealReference{})
+	if err != nil {
+		return nil, err
+	}
+	return dealRef.(*DealReference), err
 }
 
 // PlaceOTCWorkingOrder - Place an OTC workingorder
