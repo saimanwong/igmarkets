@@ -44,15 +44,21 @@ type PriceResponse struct {
 		ClosePrice            Price `json:"closePrice"`
 		LastTradedVolume      int   `json:"lastTradedVolume"`
 	}
-	InstrumentType string   `json:"instrumentType"`
-	MetaData       struct{} `json:"-"`
+	InstrumentType string `json:"instrumentType"`
+	MetaData       struct {
+		Allowance struct {
+			RemainingAllowance int `json:"remainingAllowance"`
+			TotalAllowance     int `json:"totalAllowance"`
+			AllowanceExpiry    int `json:"allowanceExpiry"`
+		} `json:"allowance"`
+	} `json:"metadata"`
 }
 
 // Price - Subset of PriceResponse
 type Price struct {
-	Bid        float64 `json:"bid"`
-	Ask        float64 `json:"ask"`
-	LastTraded float64 `json:"lastTraded"` // Last traded price
+	Bid        float64  `json:"bid"`
+	Ask        float64  `json:"ask"`
+	LastTraded *float64 `json:"lastTraded"` // Last traded price
 }
 
 // GetPriceHistory - Returns a list of historical prices for the given epic, resolution and number of data points

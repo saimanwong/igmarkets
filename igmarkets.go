@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"reflect"
@@ -89,7 +89,7 @@ func (ig *IGMarkets) doRequestWithResponseHeaders(ctx context.Context, req *http
 		}
 	}()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return igResponse, nil, fmt.Errorf("igmarkets: unable to get body of transactions markets data: %v", err)
 	}
