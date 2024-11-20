@@ -48,7 +48,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		tickChan, err := lsConn.SubscribeMarkets(ctx, conf.epics...)
+		tickChan, err := lsConn.SubscribeMarkets(ctx, 100, conf.epics...)
 		if err != nil {
 			log.WithError(err).Error("open stream fialed")
 		}
