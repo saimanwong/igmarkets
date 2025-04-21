@@ -62,9 +62,16 @@ type Price struct {
 }
 
 // GetPriceHistory - Returns a list of historical prices for the given epic, resolution and number of data points
-func (ig *IGMarkets) GetPriceHistory(ctx context.Context, epic, resolution string, max int, from, to time.Time) (*PriceResponse, error) {
-	var parameters = []string{"pageSize=100"}
-
+func (ig *IGMarkets) GetPriceHistory(
+	ctx context.Context,
+	epic, resolution string,
+	max int,
+	from, to time.Time,
+	parameters ...string,
+) (*PriceResponse, error) {
+	if len(parameters) == 0 {
+		parameters = []string{"pageSize=100"}
+	}
 	if max > 0 {
 		parameters = append(parameters, fmt.Sprintf("max=%d", max))
 	}
